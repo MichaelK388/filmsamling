@@ -8,15 +8,17 @@ public class MovieCollection {
     }
 
     public void addMovie(String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
-        // TODO US1
+
+        Movie movie = new Movie(title, director, yearCreated, inColor, lengthInMinutes, genre);
+        movies.add(movie);
     }
 
     public ArrayList<Movie> getMovies() {
-        return null;   // TODO US3
+        return movies;
     }
 
     public int getNumberOfMovies() {
-        return 0;      // TODO
+        return movies.size();
     }
 
     // Finder alle film, hvor søgeteksten indgår i titlen – uanset store og små bogstaver
@@ -32,10 +34,20 @@ public class MovieCollection {
     }
 
     public boolean editMovie(Movie movie, String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
-        return false;  // TODO US5
+        if (movies.contains(movie)) {
+            movie.setTitle(title);
+            movie.setDirector(director);
+            movie.setYearCreated(yearCreated);
+            movie.setInColor(inColor);
+            movie.setLengthInMinutes(lengthInMinutes);
+            movie.setGenre(genre);
+            return true;
+        }
+
+        return false;
     }
 
     public boolean deleteMovie(Movie movie) {
-        return false;  // TODO US6
+        return movies.remove(movie);
     }
 }
