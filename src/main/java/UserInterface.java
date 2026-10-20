@@ -89,11 +89,80 @@ public class UserInterface {
     }
 
     private void editMovie(){
-        System.out.println("Ikke lavet endnu"); //Mangler
+        System.out.println("Søg efter film: ");
+        String searchText = scanner.nextLine();
+
+        ArrayList<Movie> results = controller.searchMovies(searchText);
+
+        if (results.isEmpty()) {
+            System.out.println("Ingen film fundet.");
+            return;
+        }
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println((i + 1) + ". " + results.get(i).getTitle());
+        }
+
+        System.out.print("Vælg filmnummer: ");
+        int choice = Integer.parseInt(scanner.nextLine());
+
+        Movie movie = results.get(choice - 1);
+
+        System.out.print("Ny titel: ");
+        String title = scanner.nextLine();
+
+        System.out.print("Ny instruktør: ");
+        String director = scanner.nextLine();
+
+        System.out.print("Nyt årstal: ");
+        int yearCreated = Integer.parseInt(scanner.nextLine().trim());
+
+        System.out.print("Er filmen i farver? (ja/nej): ");
+        boolean inColor = scanner.nextLine().equalsIgnoreCase("ja");
+
+        System.out.print("Ny længde i minutter: ");
+        int lengthInMinutes = Integer.parseInt(scanner.nextLine().trim());
+
+        System.out.print("Ny genre: ");
+        String genre = scanner.nextLine();
+
+        boolean edited = controller.editMovie(movie, title, director, yearCreated, inColor, lengthInMinutes, genre);
+
+        if (edited){
+            System.out.println("Filmen blev opdateret.");
+            printMovie(movie);
+        }
     }
 
     private void deleteMovie(){
-        System.out.println("Ikke lavet endnu"); //Mangler
+        System.out.println("Søg efter film: ");
+        String searchText = scanner.nextLine();
+
+        ArrayList<Movie> results = controller.searchMovies(searchText);
+
+        if (results.isEmpty()) {
+            System.out.println("Ingen film fundet.");
+            return;
+        }
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println((i + 1) + ". " + results.get(i).getTitle());
+        }
+
+        System.out.print("Vælg filmnummer: ");
+        int choice = Integer.parseInt(scanner.nextLine());
+
+        Movie movie = results.get(choice - 1);
+
+        System.out.print("Er du sikker? (ja/nej): ");
+        String confirm = scanner.nextLine();
+
+        if (confirm.equalsIgnoreCase("ja")) {
+
+            boolean deleted = controller.deleteMovie(movie);
+
+            if (deleted) {
+                System.out.println("Filmen blev slettet.");
+            }
+        }
     }
 
     private void printMovie(Movie movie) {
