@@ -15,7 +15,7 @@ public class Controller {
                          int lengthInMinutes,
                          String genre) {
 
-        Movie movie = new Movie(
+        movieCollection.addMovie(
                 title,
                 director,
                 yearCreated,
