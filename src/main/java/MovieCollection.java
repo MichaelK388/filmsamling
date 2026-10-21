@@ -21,7 +21,6 @@ public class MovieCollection {
         return movies.size();
     }
 
-    // Finder alle film, hvor søgeteksten indgår i titlen – uanset store og små bogstaver
     public ArrayList<Movie> searchMovies(String searchText) {
         ArrayList<Movie> matches = new ArrayList<>();
         String text = searchText.toLowerCase();
@@ -32,7 +31,6 @@ public class MovieCollection {
         }
         return matches;
     }
-
     public boolean editMovie(Movie movie, String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
         if (movies.contains(movie)) {
             movie.setTitle(title);
@@ -43,10 +41,8 @@ public class MovieCollection {
             movie.setGenre(genre);
             return true;
         }
-
         return false;
     }
-
     public boolean deleteMovie(Movie movie) {
         return movies.remove(movie);
     }
