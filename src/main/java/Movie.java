@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 public class Movie {
     private String title;
     private String director;
@@ -5,6 +8,7 @@ public class Movie {
     private boolean inColor;
     private int lengthInMinutes;
     private String genre;
+    private LocalDate lastWatched;
 
     public Movie(String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
         this.title = title;
@@ -13,6 +17,7 @@ public class Movie {
         this.inColor = inColor;
         this.lengthInMinutes = lengthInMinutes;
         this.genre = genre;
+        this.lastWatched = null;
     }
 
     public String getTitle(){
@@ -32,6 +37,18 @@ public class Movie {
     }
     public String getGenre(){
         return genre;
+    }
+    public LocalDate getLastWatched() {
+        return lastWatched;
+    }
+    public boolean hasBeenWatched() {
+        return lastWatched != null;
+    }
+    public void markAsWatched(LocalDate date) {
+        lastWatched = date;
+    }
+    public long getDaysSinceWatched(LocalDate today) {
+        return ChronoUnit.DAYS.between(lastWatched, today);
     }
     public void setTitle(String title){
         this.title = title;

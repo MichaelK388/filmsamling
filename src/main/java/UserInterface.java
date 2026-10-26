@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static java.lang.Math.abs;
 
@@ -25,6 +27,8 @@ public class UserInterface {
                 case "3" -> searchMovies();
                 case "4" -> editMovie();
                 case "5" -> deleteMovie();
+                case "6" -> markMovieAsWatched();
+                case "7" -> showMoviesNotWatchedForDays();
                 case "0" -> running = false;
                 default -> System.out.println("Ukendt valg: " + choice);
             }
@@ -37,6 +41,8 @@ public class UserInterface {
         System.out.println("3. Søg efter film");
         System.out.println("4. Rediger film");
         System.out.println("5. Slet film");
+        System.out.println("6. Markér film som set");
+        System.out.println("7. Film jeg ikke har set længe");
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
     }
@@ -136,7 +142,7 @@ public class UserInterface {
     }
 
     private void deleteMovie(){
-        System.out.println("Søg efter film: ");
+        System.out.print("Søg efter film: ");
         String searchText = scanner.nextLine();
 
         ArrayList<Movie> results = controller.searchMovies(searchText);
@@ -166,6 +172,44 @@ public class UserInterface {
             }
         }
     }
+    private void markMovieAsWatched() {
+        System.out.print("Søg efter titel: ");
+        String searchText = scanner.nextLine();
+
+        ArrayList<Movie> results = controller.searchMovies(searchText);
+
+        if (results.isEmpty()){
+            System.out.println("Ingen film fundet.");
+            return;
+        }
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println((i + 1) + ". " + results.get(i).getTitle());
+        }
+        System.out.println("Vælg filmnummer: ");
+        int choice = Integer.parseInt(scanner.nextLine());
+
+        Movie movie = results.get(choice - 1);
+
+        controller.markAsWatched(movie);
+
+        System.out.println(movie.getTitle() + " er markeret som set");
+    }
+
+    private void showMoviesNotWatchedForDays() {
+        System.out.println("Hvor mange dage siden mindst? ");
+
+        int days = Integer.parseInt(scanner.nextLine());
+
+        ArrayList<Movie> movies = controller.getMoviesNotWatchedForDays(days);
+
+        if (movies.isEmpty()) {
+            System.out.println("Ingen film fundet.");
+            return;
+        }
+        for (Movie movie : movies) {
+            printMovie(movie);
+        }
+    }
 
     private void printMovie(Movie movie) {
         System.out.println("--------------------");
@@ -175,5 +219,17 @@ public class UserInterface {
         System.out.println("Type: " + (movie.isInColor() ? "Farver" : "Sort-hvid"));
         System.out.println("Længde: " + movie.getLengthInMinutes() + " min");
         System.out.println("Genre " + movie.getGenre());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        if (!movie.hasBeenWatched()) {
+            System.out.println("Sidst set: aldrig");
+        }
+        else {
+            String date = movie.getLastWatched().format(formatter);
+
+            long days = movie.getDaysSinceWatched(LocalDate.now());
+
+            System.out.println("Sidst set: " + date + " (for " + days + " dage siden)");
+        }
     }
 }
