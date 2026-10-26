@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static java.lang.Math.abs;
+
 public class UserInterface {
     private Scanner scanner;
     private Controller controller;
@@ -52,7 +54,7 @@ public class UserInterface {
         boolean inColor = scanner.nextLine().equalsIgnoreCase("ja");
 
         System.out.print("Længde i minutter: ");
-        int lengthInMinutes = Integer.parseInt(scanner.nextLine().trim());
+        int lengthInMinutes = abs(Integer.parseInt(scanner.nextLine().trim()));
 
         System.out.print("Genre: ");
         String genre = scanner.nextLine();

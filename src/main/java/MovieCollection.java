@@ -46,4 +46,23 @@ public class MovieCollection {
     public boolean deleteMovie(Movie movie) {
         return movies.remove(movie);
     }
+
+    // Alle film i samlingen, der er LÆNGERE end det angivne antal minutter
+    public ArrayList<Movie> getMoviesLongerThan(double minutes){
+        ArrayList<Movie> result = new ArrayList<>();
+        for (Movie movie : movies) {
+            if (movie.getLengthInMinutes() > minutes) {
+                result.add(movie);}
+        }
+        return result;
+    }
+    // Alle film fra det årti, der starter med decade – fx 1970 giver film fra 1970 til og med 1979
+    public ArrayList<Movie> getMoviesFromDecade(int decade){
+        ArrayList<Movie> result = new ArrayList<>();
+        for (Movie movie : movies) {
+            if (movie.getYearCreated() >= decade && movie.getYearCreated() <= decade +9) {
+                result.add(movie);}
+        }
+        return result;
+    }
 }
