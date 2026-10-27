@@ -46,7 +46,7 @@ public class UserInterface {
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
     }
-    //Bruges til at fange exceptions, hvor brugeren skriver bogstaver i stedet for tal.
+    //Bruges til at fange exceptions, hvor brugeren skriver bogstaver i stedet for tal. Reliability.
     private int readInt(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -59,7 +59,7 @@ public class UserInterface {
             }
         }
     }
-    //Reliability. Sørger for at brugeren vælger et gyldigt filmnummer, så man ikke får fejlbeskeder.
+    //Sørger for at brugeren vælger et gyldigt filmnummer, så man ikke får fejlbeskeder. Reliability.
     private Movie chooseMovie(ArrayList<Movie> results) {
         if (results.isEmpty()) {
             System.out.println("Ingen film fundet."); //besked hvis listen er tom.
@@ -86,6 +86,25 @@ public class UserInterface {
 
         return results.get(choice - 1); //brugeren har indtastet et gyldigt filmnummer.
     }
+    //Til håndtering af ja/nej spørgsmål. Reliability.
+    private boolean readYesNo(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.equalsIgnoreCase("ja") //kan håndtere ja, JA, Ja, jA
+                    || input.equalsIgnoreCase("j")) {
+                return true;
+            }
+
+            if (input.equalsIgnoreCase("nej")
+                    || input.equalsIgnoreCase("n")) {
+                return false;
+            }
+
+            System.out.println("Svar ja eller nej."); //hvis bruger skriver andet end ja/nej, spørger igen.
+        }
+    }
     private void createMovie(){
         System.out.print("Titel: ");
         String title = scanner.nextLine();
@@ -95,8 +114,7 @@ public class UserInterface {
 
         int yearCreated = readInt("Årstal: "); //sæt ind i FURPS doc, som R eksempel
 
-        System.out.print("Er filmen i farver? (ja/nej): ");
-        boolean inColor = scanner.nextLine().equalsIgnoreCase("ja");
+        boolean inColor = readYesNo("Er filmen i farver? (ja/nej): ");
 
         int lengthInMinutes = readInt("Længde i minutter: ");
 
@@ -160,8 +178,7 @@ public class UserInterface {
 
         int yearCreated = readInt("Nyt årstal: ");
 
-        System.out.print("Er filmen i farver? (ja/nej): ");
-        boolean inColor = scanner.nextLine().equalsIgnoreCase("ja");
+        boolean inColor = readYesNo("Er filmen i farver? (ja/nej): ");
 
         System.out.print("Ny længde i minutter: ");
         int lengthInMinutes = Integer.parseInt(scanner.nextLine().trim());
@@ -192,12 +209,9 @@ public class UserInterface {
         if (movie == null) {
             return;
         }
+        boolean confirm = readYesNo("Er du sikker? (ja/nej): ");
 
-        System.out.print("Er du sikker? (ja/nej): ");
-        String confirm = scanner.nextLine();
-
-        if (confirm.equalsIgnoreCase("ja")) {
-
+        if (confirm) {
             boolean deleted = controller.deleteMovie(movie);
 
             if (deleted) {
