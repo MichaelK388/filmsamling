@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MovieTest {
@@ -49,5 +51,42 @@ class MovieTest {
     @Test
     void isInColor() {
         assertFalse(movie.isInColor());
+    }
+    @Test
+    void newMovieHasNotBeenWatched() {
+
+        // Arrange
+        // Movie er oprettet i setUp()
+
+        // Act
+        // Ingen handling
+
+        // Assert
+        assertFalse(movie.hasBeenWatched());
+        assertNull(movie.getLastWatched());
+    }
+    @Test
+    void markAsWatchedStoresDate() {
+
+        // Arrange
+        LocalDate date = LocalDate.of(2025, 10, 1);
+
+        // Act
+        movie.markAsWatched(date);
+
+        // Assert
+        assertEquals(date, movie.getLastWatched());
+    }
+    @Test
+    void getDaysSinceWatchedCountsAcrossMonths() {
+
+        // Arrange
+        movie.markAsWatched(LocalDate.of(2025, 9, 30));
+
+        // Act
+        long days = movie.getDaysSinceWatched(LocalDate.of(2025, 10, 26));
+
+        // Assert
+        assertEquals(26, days);
     }
 }
