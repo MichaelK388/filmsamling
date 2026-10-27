@@ -46,6 +46,7 @@ public class UserInterface {
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
     }
+    //Bruges til at fange exceptions, hvor brugeren skriver bogstaver i stedet for tal.
     private int readInt(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -57,6 +58,33 @@ public class UserInterface {
                 System.out.println("\"" + input + "\" er ikke et helt tal. Prøv igen.");
             }
         }
+    }
+    //Reliability. Sørger for at brugeren vælger et gyldigt filmnummer, så man ikke får fejlbeskeder.
+    private Movie chooseMovie(ArrayList<Movie> results) {
+        if (results.isEmpty()) {
+            System.out.println("Ingen film fundet."); //besked hvis listen er tom.
+            return null;
+        }
+
+        for (int i = 0; i < results.size(); i++) {
+            System.out.println((i + 1) + ". " + results.get(i).getTitle());
+        }
+
+        int choice = readInt("Vælg filmnummer (0 = fortryd): ");
+
+        while (choice < 0 || choice > results.size()) { //valg ugyldigt, hvis < 0 eller > antallet af film.
+            System.out.println(
+                    "Vælg et nummer mellem 1 og " + results.size()
+                            + " – eller 0 for at fortryde."
+            );
+            choice = readInt("Vælg filmnummer (0 = fortryd): ");
+        }
+
+        if (choice == 0) { //hvis brugeren vælger 0, afslutter metoden uden at vælge en film.
+            return null;
+        }
+
+        return results.get(choice - 1); //brugeren har indtastet et gyldigt filmnummer.
     }
     private void createMovie(){
         System.out.print("Titel: ");
@@ -120,8 +148,7 @@ public class UserInterface {
             System.out.println((i + 1) + ". " + results.get(i).getTitle());
         }
 
-        System.out.print("Vælg filmnummer: ");
-        int choice = Integer.parseInt(scanner.nextLine());
+        int choice = readInt("Vælg filmnummer: ");
 
         Movie movie = results.get(choice - 1);
 
@@ -131,8 +158,7 @@ public class UserInterface {
         System.out.print("Ny instruktør: ");
         String director = scanner.nextLine();
 
-        System.out.print("Nyt årstal: ");
-        int yearCreated = Integer.parseInt(scanner.nextLine().trim());
+        int yearCreated = readInt("Nyt årstal: ");
 
         System.out.print("Er filmen i farver? (ja/nej): ");
         boolean inColor = scanner.nextLine().equalsIgnoreCase("ja");
@@ -161,14 +187,11 @@ public class UserInterface {
             System.out.println("Ingen film fundet.");
             return;
         }
-        for (int i = 0; i < results.size(); i++) {
-            System.out.println((i + 1) + ". " + results.get(i).getTitle());
+        Movie movie = chooseMovie(results); //chooseMovie(results) håndterer brugerens valg.
+
+        if (movie == null) {
+            return;
         }
-
-        System.out.print("Vælg filmnummer: ");
-        int choice = Integer.parseInt(scanner.nextLine());
-
-        Movie movie = results.get(choice - 1);
 
         System.out.print("Er du sikker? (ja/nej): ");
         String confirm = scanner.nextLine();
