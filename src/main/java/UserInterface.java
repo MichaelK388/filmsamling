@@ -46,6 +46,18 @@ public class UserInterface {
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
     }
+    private int readInt(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("\"" + input + "\" er ikke et helt tal. Prøv igen.");
+            }
+        }
+    }
     private void createMovie(){
         System.out.print("Titel: ");
         String title = scanner.nextLine();
@@ -53,14 +65,12 @@ public class UserInterface {
         System.out.print("Instruktør: ");
         String director = scanner.nextLine();
 
-        System.out.print("Årstal: ");
-        int yearCreated = Integer.parseInt(scanner.nextLine().trim());
+        int yearCreated = readInt("Årstal: "); //sæt ind i FURPS doc, som R eksempel
 
         System.out.print("Er filmen i farver? (ja/nej): ");
         boolean inColor = scanner.nextLine().equalsIgnoreCase("ja");
 
-        System.out.print("Længde i minutter: ");
-        int lengthInMinutes = abs(Integer.parseInt(scanner.nextLine().trim()));
+        int lengthInMinutes = readInt("Længde i minutter: ");
 
         System.out.print("Genre: ");
         String genre = scanner.nextLine();

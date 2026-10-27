@@ -69,16 +69,4 @@ public class Movie {
         this.genre = genre;
     }
 
-    //lastWatched kopieret fra Github, US8
-    private LocalDate lastWatched;
-
-    public boolean hasBeenWatched(){
-        return lastWatched !=null;
-    }
-    public void markAsWatched(LocalDate date){
-        lastWatched = date;
-    }
-    public long getDaysSinceLastWatched(LocalDate today){ //long bruges for større tal end int kan indeholde
-        return ChronoUnit.DAYS.between(lastWatched, today); // antal dage fra date til today
-    }
 }
