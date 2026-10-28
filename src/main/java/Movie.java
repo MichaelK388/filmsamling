@@ -11,6 +11,25 @@ public class Movie {
     private LocalDate lastWatched;
 
     public Movie(String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
+
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Titel må ikke være tom");
+        }
+
+        if (director == null || director.trim().isEmpty()) {
+            throw new IllegalArgumentException("Instruktør må ikke være tom");
+        }
+
+        if (genre == null || genre.trim().isEmpty()) {
+            throw new IllegalArgumentException("Genre må ikke være tom");
+        }
+        if (yearCreated < 1888 || yearCreated > 2027) {
+            throw new IllegalArgumentException("Årstallet skal være mellem 1888 og 2027");
+        }
+        if (lengthInMinutes < 1) {
+            throw new IllegalArgumentException("Filmens længde skal være mindst 1 minut");
+        }
+
         this.title = title;
         this.director = director;
         this.yearCreated = yearCreated;
@@ -50,10 +69,12 @@ public class Movie {
     public long getDaysSinceWatched(LocalDate today) {
         return ChronoUnit.DAYS.between(lastWatched, today);
     }
-    public void setTitle(String title){
+    public void setTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Titel må ikke være tom");
+        }
         this.title = title;
-    }
-    public void setDirector(String director){
+    }    public void setDirector(String director){
         this.director = director;
     }
     public void setYearCreated(int yearCreated){

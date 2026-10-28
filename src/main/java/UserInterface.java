@@ -9,10 +9,11 @@ public class UserInterface {
     private Scanner scanner;
     private Controller controller;
 
-    public UserInterface(){
+    public UserInterface() {
         scanner = new Scanner(System.in);
         controller = new Controller();
     }
+
     public void startProgram() {
         boolean running = true;
 
@@ -21,7 +22,7 @@ public class UserInterface {
 
             String choice = scanner.nextLine().trim();
 
-            switch (choice){
+            switch (choice) {
                 case "1" -> createMovie();
                 case "2" -> showAllMovies();
                 case "3" -> searchMovies();
@@ -34,6 +35,7 @@ public class UserInterface {
             }
         }
     }
+
     private void printMenu() {
         System.out.println("\n=== FILMSAMLING ===");
         System.out.println("1. Opret film");
@@ -46,6 +48,7 @@ public class UserInterface {
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
     }
+
     //Bruges til at fange exceptions, hvor brugeren skriver bogstaver i stedet for tal. Reliability.
     private int readInt(String prompt) {
         while (true) {
@@ -59,6 +62,20 @@ public class UserInterface {
             }
         }
     }
+
+    private String readNonEmptyString(String prompt, String errorMessage) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (!input.isEmpty()) {
+                return input;
+            }
+
+            System.out.println(errorMessage);
+        }
+    }
+
     //Sørger for at brugeren vælger et gyldigt filmnummer, så man ikke får fejlbeskeder. Reliability.
     private Movie chooseMovie(ArrayList<Movie> results) {
         if (results.isEmpty()) {
@@ -105,26 +122,36 @@ public class UserInterface {
             System.out.println("Svar ja eller nej."); //hvis bruger skriver andet end ja/nej, spørger igen.
         }
     }
-    private void createMovie(){
-        System.out.print("Titel: ");
-        String title = scanner.nextLine();
+    private void createMovie() {
+        String title = readNonEmptyString(
+                "Titel: ",
+                "Titel må ikke være tom.");
 
-        System.out.print("Instruktør: ");
-        String director = scanner.nextLine();
+        String director = readNonEmptyString(
+                "Instruktør: ",
+                "Instruktør må ikke være tom.");
 
-        int yearCreated = readInt("Årstal: "); //sæt ind i FURPS doc, som R eksempel
+        int yearCreated = readInt("Årstal: ");
 
         boolean inColor = readYesNo("Er filmen i farver? (ja/nej): ");
 
         int lengthInMinutes = readInt("Længde i minutter: ");
 
-        System.out.print("Genre: ");
-        String genre = scanner.nextLine();
+        String genre = readNonEmptyString(
+                "Genre: ",
+                "Genre må ikke være tom.");
 
-        controller.addMovie(title, director, yearCreated, inColor, lengthInMinutes, genre);
+        try {
+            controller.addMovie(title, director, yearCreated, inColor, lengthInMinutes, genre);
 
-        System.out.print("Filmen \"" + title + "\" er oprettet.");
+            System.out.println("Filmen \"" + title + "\" er oprettet.");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println("Fejl: " + e.getMessage());
+        }
     }
+
+
 
     private void showAllMovies(){
         ArrayList<Movie> movies = controller.getMovies();
