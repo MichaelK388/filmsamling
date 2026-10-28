@@ -133,4 +133,30 @@ class MovieCollectionTest {
         // Efter datoen
         assertFalse(result.contains(godzilla));
     }
+    //Hvis én værdi er ugyldig, bliver ingen af ændringerne gemt.
+    @Test
+    void editMovieAltEllerIntet() {
+
+        Movie movie = collection.searchMovies("Godzilla").get(0);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> collection.editMovie(
+                        movie,
+                        "Avatar",
+                        "James Cameron",
+                        -10,
+                        true,
+                        180,
+                        "Action"
+                )
+        );
+
+        assertEquals("Godzilla", movie.getTitle());
+        assertEquals("Ishirō Honda", movie.getDirector());
+        assertEquals(1954, movie.getYearCreated());
+        assertFalse(movie.isInColor());
+        assertEquals(96, movie.getLengthInMinutes());
+        assertEquals("Sci-fi", movie.getGenre());
+    }
 }
