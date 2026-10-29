@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import static java.lang.Math.abs;
 
@@ -43,7 +44,7 @@ public class UserInterface {
         System.out.println("3. Søg efter film");
         System.out.println("4. Rediger film");
         System.out.println("5. Slet film");
-        System.out.println("6. Markér film som set");
+        System.out.println("6. Markér en film som set");
         System.out.println("7. Film jeg ikke har set længe");
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
@@ -264,9 +265,16 @@ public class UserInterface {
 
         Movie movie = results.get(choice - 1);
 
-        controller.markAsWatched(movie);
+        LocalDate date = readDate("Hvornår så du filmen? (dd-MM-yyyy, Enter = i dag): ");
 
-        System.out.println(movie.getTitle() + " er markeret som set");
+        try {
+            controller.markAsWatched(movie, date);
+
+            System.out.println(movie.getTitle() + " er markeret som set");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void showMoviesNotWatchedForDays() {
@@ -304,6 +312,22 @@ public class UserInterface {
             long days = movie.getDaysSinceWatched(LocalDate.now());
 
             System.out.println("Sidst set: " + date + " (for " + days + " dage siden)");
+        }
+    }
+
+    private LocalDate readDate(String prompt) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()){
+                return LocalDate.now();
+            }
+            try {
+                return LocalDate.parse(input, formatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("\"" + input + "\" er ikke en dato på formen dd-MM-yyyy. Prøv igen.");
+            }
         }
     }
 }

@@ -64,6 +64,12 @@ public class Movie {
         return lastWatched != null;
     }
     public void markAsWatched(LocalDate date) {
+
+        System.out.println("Dato modtaget: " + date);
+
+       if (date.isAfter(LocalDate.now())){
+        throw new IllegalArgumentException("Datoen må ikke være i fremtiden");
+       }
         lastWatched = date;
     }
     public long getDaysSinceWatched(LocalDate today) {
