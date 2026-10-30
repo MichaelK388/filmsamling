@@ -33,26 +33,39 @@ public class MovieCollection {
         return matches;
     }
 
-    public boolean editMovie(Movie movie, String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
+    public boolean editMovie(
+            Movie movie,
+            String title,
+            String director,
+            int yearCreated,
+            boolean inColor,
+            int lengthInMinutes,
+            String genre) {
+
         if (!movies.contains(movie)) {
             return false;
         }
-        if (yearCreated < 1888) {
-            throw new IllegalArgumentException("Ugyldigt årstal");
-        }
-        if (lengthInMinutes <= 0) {
-            throw new IllegalArgumentException("Ugyldigt længde");
-        }
 
+        // Kontrollér alle værdier, før vi ændrer den eksisterende film.
+        new Movie(
+                title,
+                director,
+                yearCreated,
+                inColor,
+                lengthInMinutes,
+                genre
+        );
+
+        // Først nu ændres den eksisterende film.
         movie.setTitle(title);
         movie.setDirector(director);
         movie.setYearCreated(yearCreated);
         movie.setInColor(inColor);
         movie.setLengthInMinutes(lengthInMinutes);
         movie.setGenre(genre);
+
         return true;
     }
-
 
     public boolean deleteMovie(Movie movie) {
         return movies.remove(movie);
