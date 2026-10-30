@@ -4,9 +4,13 @@ import java.time.LocalDate;
 public class Controller {
 
     private MovieCollection movieCollection;
+    private FileHandler fileHandler;
+    private boolean changed; //holder styr på om samlingen er blevet ændret siden den sidst blev gemt.
 
     public Controller() {
         movieCollection = new MovieCollection();
+        fileHandler = new FileHandler("movies.csv");
+        changed = false;
     }
 
     public void addMovie(String title,
