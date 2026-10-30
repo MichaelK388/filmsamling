@@ -214,11 +214,21 @@ public class UserInterface {
         System.out.print("Ny genre: ");
         String genre = scanner.nextLine();
 
-        boolean edited = controller.editMovie(movie, title, director, yearCreated, inColor, lengthInMinutes, genre);
+        // Try/Catch
+        try {
+            boolean edited = controller.editMovie(
+                    movie, title, director, yearCreated,
+                    inColor, lengthInMinutes, genre
+            );
 
-        if (edited){
-            System.out.println("Filmen blev opdateret.");
-            printMovie(movie);
+            if (edited) {
+                System.out.println("Filmen blev opdateret.");
+                printMovie(movie);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(
+                    "Filmen blev ikke ændret: " + e.getMessage()
+            );
         }
     }
 

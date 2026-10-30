@@ -8,9 +8,14 @@ public class MovieCollection {
         movies = new ArrayList<>();
     }
 
-    public void addMovie(String title, String director, int yearCreated, boolean inColor, int lengthInMinutes, String genre) {
+    public void addMovie(String title, String director, int yearCreated,
+                         boolean inColor, int lengthInMinutes, String genre) {
 
         Movie movie = new Movie(title, director, yearCreated, inColor, lengthInMinutes, genre);
+        movies.add(movie);
+    }
+    // Method overloading, bruges til Filehandler.java
+    public void addMovie(Movie movie) {
         movies.add(movie);
     }
 
