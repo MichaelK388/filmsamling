@@ -64,6 +64,28 @@ public class UserInterface {
         }
     }
 
+    private int readYear(String prompt) {
+        while (true) {
+            int year = readInt(prompt);
+
+            if (year >= 1888 && year <= 2027) {
+                return year;
+            }
+            System.out.println("Årstallet skal være mellem 1888 og 2027.");
+        }
+    }
+
+    private int readLength(String prompt) {
+        while (true) {
+            int length = readInt(prompt);
+
+            if (length >= 1) {
+                return length;
+            }
+            System.out.println("Filmens længde skal være mindst 1 minut.");
+        }
+    }
+
     private String readNonEmptyString(String prompt, String errorMessage) {
         while (true) {
             System.out.print(prompt);
@@ -80,7 +102,7 @@ public class UserInterface {
     //Sørger for at brugeren vælger et gyldigt filmnummer, så man ikke får fejlbeskeder. Reliability.
     private Movie chooseMovie(ArrayList<Movie> results) {
         if (results.isEmpty()) {
-            System.out.println("Ingen film fundet."); //besked hvis listen er tom.
+            System.out.println("Ingen film fundet.");
             return null;
         }
 
@@ -90,20 +112,22 @@ public class UserInterface {
 
         int choice = readInt("Vælg filmnummer (0 = fortryd): ");
 
-        while (choice < 0 || choice > results.size()) { //valg ugyldigt, hvis < 0 eller > antallet af film.
+        //valg ugyldigt, hvis < 0 eller > antallet af film.
+        while (choice < 0 || choice > results.size()) {
             System.out.println(
                     "Vælg et nummer mellem 1 og " + results.size()
                             + " – eller 0 for at fortryde."
             );
             choice = readInt("Vælg filmnummer (0 = fortryd): ");
         }
-
-        if (choice == 0) { //hvis brugeren vælger 0, afslutter metoden uden at vælge en film.
+        //hvis brugeren vælger 0, afslutter metoden uden at vælge en film.
+        if (choice == 0) {
             return null;
         }
-
-        return results.get(choice - 1); //brugeren har indtastet et gyldigt filmnummer.
+        //brugeren har indtastet et gyldigt filmnummer.
+        return results.get(choice - 1);
     }
+
     //Til håndtering af ja/nej spørgsmål. Reliability.
     private boolean readYesNo(String prompt) {
         while (true) {
@@ -119,10 +143,11 @@ public class UserInterface {
                     || input.equalsIgnoreCase("n")) {
                 return false;
             }
-
-            System.out.println("Svar ja eller nej."); //hvis bruger skriver andet end ja/nej, spørger igen.
+            //hvis bruger skriver andet end ja/nej, spørger igen.
+            System.out.println("Svar ja eller nej.");
         }
     }
+
     private void createMovie() {
         String title = readNonEmptyString(
                 "Titel: ",
@@ -132,40 +157,63 @@ public class UserInterface {
                 "Instruktør: ",
                 "Instruktør må ikke være tom.");
 
-        int yearCreated = readInt("Årstal: ");
+        int yearCreated = readYear("Årstal: ");
 
         boolean inColor = readYesNo("Er filmen i farver? (ja/nej): ");
 
-        int lengthInMinutes = readInt("Længde i minutter: ");
+        int lengthInMinutes = readLength("Længde i minutter: ");
 
-        String genre = readNonEmptyString(
-                "Genre: ",
-                "Genre må ikke være tom.");
+        String genre = readGenre("Genre: ");
 
         try {
             controller.addMovie(title, director, yearCreated, inColor, lengthInMinutes, genre);
 
             System.out.println("Filmen \"" + title + "\" er oprettet.");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("Fejl: " + e.getMessage());
         }
     }
 
-
-
-    private void showAllMovies(){
+    private void showAllMovies() {
         ArrayList<Movie> movies = controller.getMovies();
 
-        if (movies.isEmpty()){
+        if (movies.isEmpty()) {
             System.out.println("Samlingen er tom.");
         }
-        for (Movie movie : movies){
+        for (Movie movie : movies) {
             printMovie(movie);
         }
     }
 
-    private void searchMovies(){
+    private String readGenre(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Genre må ikke være tom.");
+                continue;
+            }
+
+            boolean containsNumber = false;
+
+            for (char c : input.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    containsNumber = true;
+                    break;
+                }
+            }
+
+            if (containsNumber) {
+                System.out.println("Genre må ikke indeholde tal.");
+                continue;
+            }
+
+            return input;
+        }
+    }
+
+    private void searchMovies() {
         System.out.print("Søg efter titel: ");
         String searchText = scanner.nextLine();
 
@@ -180,7 +228,7 @@ public class UserInterface {
         }
     }
 
-    private void editMovie(){
+    private void editMovie() {
         System.out.println("Søg efter film: ");
         String searchText = scanner.nextLine();
 
@@ -232,7 +280,7 @@ public class UserInterface {
         }
     }
 
-    private void deleteMovie(){
+    private void deleteMovie() {
         System.out.print("Søg efter film: ");
         String searchText = scanner.nextLine();
 
@@ -257,13 +305,14 @@ public class UserInterface {
             }
         }
     }
+
     private void markMovieAsWatched() {
         System.out.print("Søg efter titel: ");
         String searchText = scanner.nextLine();
 
         ArrayList<Movie> results = controller.searchMovies(searchText);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             System.out.println("Ingen film fundet.");
             return;
         }
@@ -281,8 +330,7 @@ public class UserInterface {
             controller.markAsWatched(movie, date);
 
             System.out.println(movie.getTitle() + " er markeret som set");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -315,8 +363,7 @@ public class UserInterface {
 
         if (!movie.hasBeenWatched()) {
             System.out.println("Sidst set: aldrig");
-        }
-        else {
+        } else {
             String date = movie.getLastWatched().format(formatter);
 
             long days = movie.getDaysSinceWatched(LocalDate.now());
@@ -330,7 +377,7 @@ public class UserInterface {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim();
-            if (input.isEmpty()){
+            if (input.isEmpty()) {
                 return LocalDate.now();
             }
             try {
