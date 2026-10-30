@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.Scanner;
 
 public class FileHandler {
 
+    private static final String HEADER =
+            "title;director;yearCreated;inColor;lengthInMinutes;genre;lastWatched";
     private String fileName;
     private int skippedLineCount;
 
@@ -19,25 +22,26 @@ public class FileHandler {
         ArrayList<Movie> movies = new ArrayList<>();
         skippedLineCount = 0;
 
-        Scanner fileScanner = new Scanner(new File(fileName));
+        try (Scanner fileScanner = new Scanner(new File(fileName))) {
+        //fileScanner lukkes automatisk når en blok er færdig, selv hvis exception opstår.
 
-        if (fileScanner.hasNextLine()){
-            fileScanner.nextLine();
-        }
+            if (fileScanner.hasNextLine()) {
+                fileScanner.nextLine();
+            }
 
-        while (fileScanner.hasNextLine()){
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
 
-            String line = fileScanner.nextLine();
+                Movie movie = parseMovie(line);
 
-            Movie movie = parseMovie(line);
-
-            if (movie != null){
-                movies.add(movie);
-            } else {
-                skippedLineCount++;
+                if (movie != null) {
+                    movies.add(movie);
+                } else {
+                    skippedLineCount++;
+                }
             }
         }
-        fileScanner.close();
+
         return movies;
     }
 
@@ -68,5 +72,34 @@ public class FileHandler {
         } catch (DateTimeParseException e) {
             return null;
         }
+    }
+    public void saveMovies(ArrayList<Movie> movies)
+            throws FileNotFoundException {
+            //Hvis filen ikke kan åbnes/oprettes, sender FileHandler fejlen videre med throws til UserInterface.
+            //UserInterface giver besked til brugeren hvis filen ikke kan gemmes.
+
+        PrintStream output = new PrintStream(new File(fileName));
+        //fileName = filnavn som gives til FileHandler når den oprettes.
+
+        output.println(HEADER);
+
+        for (Movie movie : movies) {
+            output.println(toCsvLine(movie)); //toCsvLine(movie) omdanner filmen til en tekstlinje
+        }
+
+        output.close();
+    }
+    private String toCsvLine(Movie movie) {
+        String lastWatched = "";
+        if (movie.hasBeenWatched()) {
+            lastWatched = movie.getLastWatched().toString();
+        }
+        return movie.getTitle() + ";"
+                + movie.getDirector() + ";"
+                + movie.getYearCreated() + ";"
+                + movie.isInColor() + ";"
+                + movie.getLengthInMinutes() + ";"
+                + movie.getGenre() + ";"
+                + lastWatched;
     }
 }
