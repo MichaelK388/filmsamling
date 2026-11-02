@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.io.FileNotFoundException;
 
 public class Controller {
 
@@ -28,8 +29,7 @@ public class Controller {
                 lengthInMinutes,
                 genre
         );
-
-        //movieCollection.addMovie(movie);
+        changed = true;
     }
 
     public ArrayList<Movie> getMovies() {
@@ -48,7 +48,7 @@ public class Controller {
                              int lengthInMinutes,
                              String genre) {
 
-        return movieCollection.editMovie(
+        boolean success = movieCollection.editMovie( //movieCollection gemmes i variablen "succes"
                 movie,
                 title,
                 director,
@@ -57,17 +57,56 @@ public class Controller {
                 lengthInMinutes,
                 genre
         );
-    }
 
+        if (success) { //hvis "success" ændres (= true), redigeringen lykkedes
+            changed = true;
+        }
+
+        return success;
+    }
     public boolean deleteMovie(Movie movie) {
-        return movieCollection.deleteMovie(movie);
+
+        boolean deleted = movieCollection.deleteMovie(movie);
+
+        if (deleted) {
+            changed = true;
+        }
+
+        return deleted;
     }
     public void markAsWatched(Movie movie, LocalDate date) {
+
         movie.markAsWatched(date);
+        changed = true;
     }
     public ArrayList<Movie> getMoviesNotWatchedForDays(int days) {
         LocalDate limit = LocalDate.now().minusDays(days);
         return movieCollection.getMoviesNotWatchedSince(limit);
     }
+    public int loadMovies() throws FileNotFoundException {
 
+        ArrayList<Movie> loadedMovies = fileHandler.loadMovies();
+
+        for (Movie movie : loadedMovies) {
+            movieCollection.addMovie(movie);
+        }
+        changed = false;
+
+        return loadedMovies.size();
+    }
+    public int getSkippedLineCount() {
+        return fileHandler.getSkippedLineCount();
+    }
+    //US14 – Gem kun, når der er ændringer. Performance.
+    public boolean saveMoviesIfChanged() throws FileNotFoundException {
+
+        if (!changed) {
+            return false;
+        }
+
+        fileHandler.saveMovies(movieCollection.getMovies());
+        changed = false;
+
+        return true;
+    }
 }
