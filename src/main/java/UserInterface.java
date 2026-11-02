@@ -3,8 +3,7 @@ import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
-import static java.lang.Math.abs;
+import java.io.FileNotFoundException;
 
 public class UserInterface {
     private Scanner scanner;
@@ -16,6 +15,26 @@ public class UserInterface {
     }
 
     public void startProgram() {
+
+        try {
+            int count = controller.loadMovies();
+            System.out.println(count + " film er indlæst.");
+
+            int skipped = controller.getSkippedLineCount();
+
+            if (skipped > 0) {
+                System.out.println(
+                        "Advarsel: " + skipped
+                                + " linje(r) i filen kunne ikke læses og er sprunget over."
+                );
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println(
+                    "Der er ingen gemt filmsamling endnu – du starter med en tom samling."
+                    //movies.csv findes ikke når prog. startes, besked til bruger i stedet for prog. går ned
+            );
+        }
         boolean running = true;
 
         while (running) {
@@ -35,6 +54,22 @@ public class UserInterface {
                 default -> System.out.println("Ukendt valg: " + choice);
             }
         }
+        try {
+            boolean saved = controller.saveMoviesIfChanged();
+
+            if (saved) {
+                System.out.println("Filmsamlingen er gemt.");
+            } else {
+                System.out.println("Ingen ændringer – intet at gemme.");
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println(
+                    "Filmsamlingen kunne ikke gemmes. Kontrollér, at filen kan oprettes."
+            );
+        }
+
+        System.out.println("Farvel!");
     }
 
     private void printMenu() {
@@ -242,9 +277,11 @@ public class UserInterface {
             System.out.println((i + 1) + ". " + results.get(i).getTitle());
         }
 
-        int choice = readInt("Vælg filmnummer: ");
+        Movie movie = chooseMovie(results);
 
-        Movie movie = results.get(choice - 1);
+        if (movie == null) {
+            return;
+        }
 
         System.out.print("Ny titel: ");
         String title = scanner.nextLine();
@@ -256,8 +293,7 @@ public class UserInterface {
 
         boolean inColor = readYesNo("Er filmen i farver? (ja/nej): ");
 
-        System.out.print("Ny længde i minutter: ");
-        int lengthInMinutes = Integer.parseInt(scanner.nextLine().trim());
+        int lengthInMinutes = readInt("Ny længde i minutter: ");
 
         System.out.print("Ny genre: ");
         String genre = scanner.nextLine();
@@ -319,10 +355,11 @@ public class UserInterface {
         for (int i = 0; i < results.size(); i++) {
             System.out.println((i + 1) + ". " + results.get(i).getTitle());
         }
-        System.out.println("Vælg filmnummer: ");
-        int choice = Integer.parseInt(scanner.nextLine());
+        Movie movie = chooseMovie(results);
 
-        Movie movie = results.get(choice - 1);
+        if (movie == null) {
+            return;
+        }
 
         LocalDate date = readDate("Hvornår så du filmen? (dd-MM-yyyy, Enter = i dag): ");
 
@@ -336,9 +373,7 @@ public class UserInterface {
     }
 
     private void showMoviesNotWatchedForDays() {
-        System.out.println("Hvor mange dage siden mindst? ");
-
-        int days = Integer.parseInt(scanner.nextLine());
+        int days = readInt("Hvor mange dage siden mindst? ");
 
         ArrayList<Movie> movies = controller.getMoviesNotWatchedForDays(days);
 
