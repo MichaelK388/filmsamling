@@ -161,4 +161,22 @@ class MovieCollectionTest {
         assertEquals(96, movie.getLengthInMinutes());
         assertEquals("Sci-fi", movie.getGenre());
     }
+    @Test
+    void getMoviesSortedByTitleIsAlphabetical() {
+        ArrayList<Movie> sorted = collection.getMoviesSortedByTitle();
+
+        assertEquals("Casablanca", sorted.get(0).getTitle());
+        assertEquals("Godzilla", sorted.get(1).getTitle());
+        assertEquals("The Godfather", sorted.get(2).getTitle());
+    }
+    @Test
+    void sortingDoesNotChangeTheCollection(){
+        collection.getMoviesSortedByTitle();
+        collection.getMoviesSorted(new YearComparator());
+
+        ArrayList<Movie> movies = collection.getMovies();
+        assertEquals("The Godfather", movies.get(0).getTitle());
+        assertEquals("Casablanca", movies.get(1).getTitle());
+        assertEquals("Godzilla", movies.get(2).getTitle());
+    }
 }

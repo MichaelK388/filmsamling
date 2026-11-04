@@ -3,6 +3,7 @@ import datasource.FileHandler;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.io.FileNotFoundException;
+import java.util.Comparator;
 
 public class Controller {
 
@@ -110,5 +111,22 @@ public class Controller {
         changed = false;
 
         return true;
+    }
+
+    public ArrayList<Movie> getMoviesSortedByTitle() {
+        return movieCollection.getMoviesSortedByTitle();
+    }
+    public ArrayList<Movie> getMoviesSortedBy(SortField field) {
+        return movieCollection.getMoviesSorted(comparatorFor(field));
+    }
+
+    private Comparator<Movie> comparatorFor(SortField field) {
+        return switch (field) {
+            case TITLE -> new TitleComparator();
+            case DIRECTOR -> new DirectorComparator();
+            case YEAR -> new YearComparator();
+            case LENGTH -> new LengthComparator();
+            case GENRE -> new GenreComparator();
+        };
     }
 }

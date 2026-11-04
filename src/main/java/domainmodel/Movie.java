@@ -2,8 +2,12 @@ package domainmodel;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-public class Movie {
+public class Movie implements Comparable<Movie>{
 
+    @Override
+    public int compareTo(Movie other) {
+        return title.compareToIgnoreCase(other.title);
+    }
     private static final int FIRST_MOVIE_YEAR = 1888;
 
     private String title;

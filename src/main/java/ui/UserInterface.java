@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.io.FileNotFoundException;
+import domainmodel.SortField;
 
 public class UserInterface {
     private Scanner scanner;
@@ -53,6 +54,7 @@ public class UserInterface {
                 case "5" -> deleteMovie();
                 case "6" -> markMovieAsWatched();
                 case "7" -> showMoviesNotWatchedForDays();
+                case "8" -> showMoviesSortedBy();
                 case "0" -> running = false;
                 default -> System.out.println("Ukendt valg: " + choice);
             }
@@ -84,6 +86,7 @@ public class UserInterface {
         System.out.println("5. Slet film");
         System.out.println("6. Markér en film som set");
         System.out.println("7. Film jeg ikke har set længe");
+        System.out.println("8. Vis film sorteret efter ...");
         System.out.println("0. Afslut");
         System.out.print("Vælg: ");
     }
@@ -213,7 +216,7 @@ public class UserInterface {
     }
 
     private void showAllMovies() {
-        ArrayList<Movie> movies = controller.getMovies();
+        ArrayList<Movie> movies = controller.getMoviesSortedByTitle();
 
         if (movies.isEmpty()) {
             System.out.println("Samlingen er tom.");
@@ -221,6 +224,38 @@ public class UserInterface {
         for (Movie movie : movies) {
             printMovie(movie);
         }
+    }
+    private void showMoviesSortedBy() {
+        SortField[] fields = SortField.values();
+
+        System.out.println("Sorter efter:");
+        for (int i = 0; i < fields.length; i++) {
+            System.out.println("  " + (i + 1) + ". " + sortFieldName(fields[i]));
+        }
+        int choice = readInt("Vælg: ");
+        while (choice < 1 || choice > fields.length) {
+            System.out.println("Vælg et nummer mellem 1 og " + fields.length + ".");
+            choice = readInt("Vælg: ");
+        }
+
+        ArrayList<Movie> movies = controller.getMoviesSortedBy(fields[choice - 1]);
+
+        if (movies.isEmpty()){
+            System.out.println("Samlingen er tom.");
+            return;
+        }
+        for (Movie movie : movies) {
+            printMovie(movie);
+        }
+    }
+    private String sortFieldName(SortField field) {
+        return switch (field) {
+            case TITLE -> "titel";
+            case DIRECTOR -> "instruktør";
+            case YEAR -> "årstal";
+            case LENGTH -> "længde";
+            case GENRE -> "genre";
+        };
     }
 
     private String readGenre(String prompt) {

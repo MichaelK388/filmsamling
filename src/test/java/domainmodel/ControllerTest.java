@@ -3,6 +3,8 @@ package domainmodel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ControllerTest {
@@ -74,5 +76,17 @@ class ControllerTest {
         Movie movie = controller.getMovies().get(0);
 
         assertTrue(controller.deleteMovie(movie));
+    }
+    @Test
+    void moviesSortedByYear(){
+        controller.addMovie("Psycho", "Alfred Hitchcock", 1960, false, 109, "Horror");
+        controller.addMovie("Casablanca", "Michael Curtiz", 1942, false, 102, "Drama");
+        controller.addMovie("Jaws", "Steven Spielberg", 1975, true, 124, "Thriller");
+
+        ArrayList<Movie> sorted = controller.getMoviesSortedBy(SortField.YEAR);
+
+        assertEquals(1942, sorted.get(0).getYearCreated());
+        assertEquals(1960, sorted.get(1).getYearCreated());
+        assertEquals(1975, sorted.get(2).getYearCreated());
     }
 }

@@ -91,4 +91,13 @@ class MovieTest {
         // Assert
         assertEquals(26, days);
     }
+    @Test
+    void compareToSortsByTitleIgnoreCase() {
+        Movie alien = new Movie("alien", "Ridley Scott", 1979, true, 117, "Horror");
+        Movie upperCase = new Movie("GODZILLA", "Ishiro Honda", 1954, false, 96, "Action");
+
+        assertTrue(alien.compareTo(movie) < 0);
+        assertTrue(movie.compareTo(alien) > 0);
+        assertEquals(0, movie.compareTo(upperCase));
+    }
 }
