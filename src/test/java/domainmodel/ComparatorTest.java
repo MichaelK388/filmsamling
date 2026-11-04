@@ -3,8 +3,7 @@ package domainmodel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ComparatorTest {
 
@@ -18,7 +17,7 @@ public class ComparatorTest {
         casablanca = new Movie("Casablanca", "Michael Curtiz", 1942, false, 102, "Drama");
         psycho = new Movie("Psycho", "Alfred Hitchcock", 1960, false, 109, "Horror");
         jaws = new Movie("Jaws", "Steven Spielberg", 1975, true, 124, "Thriller");
-        twin = new Movie("Anden film", "Michael Cortiz", 1942, false, 102, "Drama");
+        twin = new Movie("Anden film", "Michael Curtiz", 1942, false, 102, "Drama");
     }
     @Test
     void titleComparator(){
